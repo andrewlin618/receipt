@@ -1,6 +1,6 @@
 import React from 'react';
-import Cart from './components/Cart';
-import Receipt from './components/Receipt';
+import Cart from '../components/Cart';
+import Receipt from '../components/Receipt';
 import Nav from './components/Nav';
 import {input1, input2, input3} from './data/testInput';
 
