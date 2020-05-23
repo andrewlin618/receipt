@@ -1,7 +1,9 @@
 import React from 'react';
 import Receipt from '../components/Receipt';
+import Basket from '../components/Basket';
 import Nav from '../components/Nav';
 import Jumbotron from '../components/Jumbotron';
+
 
 function getSalesTax(price){
   let tem = Math.ceil(price * 10);
@@ -23,12 +25,17 @@ function getImportedTax(price){
 class Main extends React.Component {
   state = {
     items : [],
+    itemsPricesWithTax :[],
     salesTax : 0,
     total : 0
   };
 
   handleSubmit = () => {
     //TODO:
+  }
+
+  handleAddItem = () => {
+    console.log('added');
   }
 
   getReceipt = (test) => {
@@ -60,14 +67,15 @@ class Main extends React.Component {
             {/* The input field: */}
               <div className = 'col-md-6'> 
                 <h3>1) Add a new item into basket!</h3>
-
+                <Basket items = {this.state.items}/>
+                <br />
                 {/* Button trigger modal */}
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                <button type="button" className="btn btn-dark w-75" data-toggle="modal" data-target="#exampleModalCenter">
                   +
                 </button>
 
-                {/* Modal */}
-                <div className="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                {/* Modal for add item to basket*/}
+                <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
                   <div className="modal-dialog modal-dialog-centered" role="document">
                     <div className="modal-content">
                       <div className="modal-header text-center">
@@ -76,27 +84,70 @@ class Main extends React.Component {
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
+
+                      {/* new item */}
                       <div className="modal-body">
-                        <label>Item:<input type="text" name="name" placeholder="book"/></label><br/>
-                        <label>price:<input type="text" name="price" /></label><br/>
-                        <label>amount:<input type="number" min = '1' name="amount" /></label><br/>
-                        <label>tax exemption?<input type="checkbox" name="exemption" /></label><br/>
-                        <label>imported? :<input type="checkbox" name="imported" /></label><br/>
+                        <div className="input-group mb-3">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text">Item</span>
+                          </div>
+                          <input type="text" className="form-control" id="item"/>
+                        </div>
+
+                        <div className="input-group mb-3">
+                          <div className="input-group-prepend">
+                            <span className="input-group-text">Price</span>
+                          </div>
+                          <input type="text" className="form-control" id="price"/>
+                        </div>
+
+                        <div className="input-group mb-3">
+                          <div className="input-group-prepend">
+                            <label className="input-group-text">Quantity</label>
+                          </div>
+                          <input type="number" className="form-control" id="quantity" min="1"/>
+                        </div>
+
+                        <div className="input-group mb-3">
+                          <div className="input-group-prepend">
+                            <label className="input-group-text">Category</label>
+                          </div>
+                          <select className="custom-select" id="category">
+                            <option value="1">Food</option>
+                            <option value="2">Book</option>
+                            <option value="3">Medical product</option>
+                            <option value="4">Other</option>
+                          </select>
+                        </div>
+
+                        <div className="input-group mb-3">
+                          <div className="input-group-prepend">
+                            <label className="input-group-text">Imported</label>
+                          </div>
+                          <select className="custom-select" id="category">
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                          </select>
+                        </div>
                       </div>
                       <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary">Add to basket</button>
+                        <button type="button" className="btn btn-primary" onClick = {this.handleAddItem()}>Add to basket</button>
                       </div>
                     </div>
                   </div>
                 </div>
+              </div>
+              
 
-
-              </div>  
-              <div className = 'col-md-6'>          
-              {this.state.items.length === 0 && <h3>2) Check out to get your receipt.</h3>}      
-              {this.state.items.length > 0 && <Receipt items = {this.state.items} tax = {this.state.salesTax} total = {this.state.total}>
-              </Receipt>}
+              <div className = 'col-md-6'>    
+              <h3>2) Check out to print the receipt</h3>      
+              <Receipt 
+                  items = {this.state.items} 
+                  tax = {this.state.salesTax} 
+                  total = {this.state.total}
+                  itemsPricesWithTax = {this.state.itemsPricesWithTax} 
+              />
               </div>
             </div>  
           </div>         

@@ -2,6 +2,7 @@ import React from 'react';
 import JSON from '../components/JSON';
 import Receipt from '../components/Receipt';
 import Nav from '../components/Nav';
+import './jsonPage.css';
 
 import input1 from '../data/input1.json'
 import input2 from '../data/input2.json'
@@ -28,7 +29,15 @@ class Sample extends React.Component {
     };
 
     handleSubmit = () => {
-        //TODO:
+        var files = document.getElementById('upload').files;
+        console.log(files);
+        if (files.length <= 0) return false;
+        console.log('File uploaded!')
+        var fr = new FileReader();
+        fr.onload = function(e) { 
+            console.log(e.target.result);
+        }
+        fr.readAsText(files.item(0));      
     }
 
     getReceipt = (input) => {
@@ -52,6 +61,11 @@ class Sample extends React.Component {
         })
     }
 
+    handleOnChange = () => {
+        let file = document.getElementById('upload').files[0];
+        console.dir(file);
+    }
+
     render() {
         return(
             <div className = 'Main'>
@@ -66,9 +80,9 @@ class Sample extends React.Component {
                             <button className='btn btn-dark m-1' onClick = {() => this.getReceipt(input2)}>Sample 2</button>
                             <button className='btn btn-dark m-1' onClick = {() => this.getReceipt(input3)}>Sample 3</button>      
                             <button className='btn btn-secondary m-1' onClick = {() => this.getReceipt([])}>Clear Input </button>
-                            <div class="upload-btn-wrapper">
-                                <button class="btn btn-success m-1">Upload a file</button>
-                                <input type="file" name="myfile" />
+                            <div className="upload-btn-wrapper">
+                                <input type="file" accept='.json' id = 'upload' onChange={this.handleOnChange}/>
+                                <button className="btn btn-success m-1" onClick={this.handleSubmit}>Upload</button>
                             </div>
                         </div>
                         <div className = 'col-md-5'>  
