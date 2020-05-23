@@ -1,0 +1,16 @@
+[
+    {
+        "name": "book",
+        "quantity": 1,
+        "price": 10.00,
+        "exemption": true,
+        "imported": true
+    },
+    {
+        "name": "bottle of perfume",
+        "quantity": 1,
+        "price": 47.50,
+        "exemption": false,
+        "imported": true
+    }
+]

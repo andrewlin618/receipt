@@ -2,18 +2,49 @@ import React from 'react';
 
 function Receipt(props) {
     return (
-        <div className = 'Receipt'>
-            <h3>This is your receipt.</h3> 
-            {props.items[0].priceAfterTax && props.items.map((item, index) => 
-                <h5 key = {index}>{item.quantity} {item.name} at {item.priceAfterTax}</h5>
-                )}
-            {props.items[0].priceAfterTax &&
-                <div>
-                    <hr/>
-                    <h5>Sales Tax: {props.tax}</h5>
-                    <h5>Total :{props.total}</h5>
-                </div>
-            }
+        <div className = 'Receipt card m-2'>
+            <div class="card-body shadow p-4">
+                <h5 class="card-title text-center">Welcome to Andrew's Grocery</h5>
+                <h6 class="card-subtitle mb-2 text-muted text-center">Price with taxes</h6>
+                <br/><br/>
+                    {/* Separate items: */}
+                    <div className="row">
+                        <div className='col-8'>
+                            {props.itemsPricesWithTax.length > 0 && props.items.map((item, index) => 
+                                <p className='card-text' key = {index}>{item.quantity} x {item.name} {item.imported ? '**' : ''}</p>
+                            )}
+                        </div>
+                        <div className='col-4 text-right'>
+                            {props.itemsPricesWithTax.length > 0 && props.itemsPricesWithTax.map((price, index) => 
+                                <p className='card-text' key = {-index}>${price.toFixed(2)}</p>
+                            )}
+                        </div>
+                    </div>
+                    <hr />
+
+                    {/* Tax and title: */}
+                    <div className="row">
+                        <div className='col-8'>
+                            {props.itemsPricesWithTax.length > 0 &&
+                                <div>
+                                    <p className='font-weight-bold'>Sales Tax: </p>
+                                    <p className='font-weight-bold'>Total: </p>
+                                    <br />
+                                </div>
+                            }
+                        </div>
+                        <div className='col-4 text-right'>
+                            {props.itemsPricesWithTax.length > 0 &&
+                                <div>
+                                    <p className="font-weight-bold">${props.tax}</p>
+                                    <p className="font-weight-bold">${props.total}</p>
+                                    <p className="font-italic">** imported</p>
+                                    <button className='btn-dark'>Download</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+            </div>
         </div>
     );
 }
