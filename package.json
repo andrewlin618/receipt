@@ -44,5 +44,16 @@
   },
   "devDependencies": {
     "gh-pages": "^2.2.0"
+  },
+  "description": "<img src=\"https://i.ibb.co/8Yyw9Kx/Screen-Shot-2020-05-23-at-18-07-00.png\" alt=\"screenshot\" height=300px></img>",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewlin618/receipt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andrewlin618/receipt/issues"
   }
 }
