@@ -2,7 +2,7 @@ const router = require("express").Router();
 
 
 
-router.get('/receipt', function(req, res){
+router.post('/receipt', function(req, res){
     // return res.json();
     let result = 
     { items : [{

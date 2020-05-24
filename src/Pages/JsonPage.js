@@ -25,19 +25,16 @@ class Sample extends React.Component {
         items : [],
         itemsPricesWithTax :[],
         salesTax : 0,
-        total : 0
+        total : 0,
+        text:''
     };
 
     handleSubmit = () => {
-        var files = document.getElementById('upload').files;
-        console.log(files);
-        if (files.length <= 0) return false;
-        console.log('File uploaded!')
-        var fr = new FileReader();
-        fr.onload = function(e) { 
-            console.log(e.target.result);
-        }
-        fr.readAsText(files.item(0));      
+        console.log('submitted');
+        
+        this.setState({
+            items : this.state.text
+        })
     }
 
     getReceipt = (input) => {
@@ -62,8 +59,19 @@ class Sample extends React.Component {
     }
 
     handleOnChange = () => {
-        let file = document.getElementById('upload').files[0];
-        console.dir(file);
+        var files = document.getElementById('upload').files;
+        console.log(files);
+        if (files.length <= 0) return false;
+        console.log('File uploaded!')
+        var fileReader = new FileReader();
+        fileReader.onloadend = (e) => {
+            console.log(e.target.result);
+            this.setState({
+                text : e.target.result
+            }) 
+        }
+        fileReader.readAsText(files[0]);
+
     }
 
     render() {
@@ -75,17 +83,21 @@ class Sample extends React.Component {
                 <h3 className='text-center'><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/JSON_vector_logo.svg/1200px-JSON_vector_logo.svg.png" height='25px' alt='logo'/> JSON</h3>  
                     <div className = 'row'>  
                         {/* The shopping cart: */}
-                        <div className = 'col-md-2'>
+                        <div className = 'col-md-3'>
                             <button className='btn btn-dark m-1' onClick = {() => this.getReceipt(input1)}>Sample 1</button>
                             <button className='btn btn-dark m-1' onClick = {() => this.getReceipt(input2)}>Sample 2</button>
                             <button className='btn btn-dark m-1' onClick = {() => this.getReceipt(input3)}>Sample 3</button>      
                             <button className='btn btn-secondary m-1' onClick = {() => this.getReceipt([])}>Clear Input </button>
+                            <br /><br />
+
+                            
+
                             <div className="upload-btn-wrapper">
                                 <input type="file" accept='.json' id = 'upload' onChange={this.handleOnChange}/>
                                 <button className="btn btn-success m-1" onClick={this.handleSubmit}>Upload</button>
                             </div>
                         </div>
-                        <div className = 'col-md-5'>  
+                        <div className = 'col-md-4'>  
                             <JSON items = {this.state.items} />
                         </div>  
 

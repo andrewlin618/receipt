@@ -2,6 +2,7 @@ import React from 'react';
 import Receipt from '../components/Receipt';
 import Basket from '../components/Basket';
 import Nav from '../components/Nav';
+import $ from 'jquery';
 import Jumbotron from '../components/Jumbotron';
 
 
@@ -30,31 +31,63 @@ class Main extends React.Component {
     total : 0
   };
 
-  handleSubmit = () => {
-    //TODO:
-  }
-
   handleAddItem = () => {
-    console.log('added');
+    alert('ok');
+    console.log($('#item').text());
   }
 
-  getReceipt = (test) => {
+  handleSubmit = () => {
+    let newItem = {};
+    newItem.name = $('#name').val();
+    if (newItem.name === '') return alert('Input the name of item!') 
+    newItem.quantity = parseInt($('#quantity').val());
+    if (isNaN(newItem.quantity) || newItem.quantity <= 0) return alert('Invalid quantity!') 
+    newItem.price = parseFloat($('#price').val());
+    if (isNaN(newItem.price))  return alert('Invalid price!')
+    newItem.exemption = $('#category').val() !== 'other' ? true : false;
+    newItem.imported = $('#imported').val() === 'yes' ? true : false
+    let items = this.state.items;
+    items.push(newItem)
+    this.setState({
+      items : items
+    });
+    $('#name').val('');
+    $('#quantity').val('');
+    $('#price').val('');
+    $('#category').val('other');
+    $('#imported').val('no');
+  }
+
+  getReceipt = (input) => {
     // TODO:
     var totalTax = 0;
     var total = 0;
-    for (const item of test) {
-      let salesTax = item.exemption? 0 : getSalesTax(item.price);
-      let importedTax = !item.imported? 0 : getImportedTax(item.price);
-      let tax = salesTax + importedTax;
-      totalTax += tax;
-      item.priceAfterTax = Number((item.price + tax).toFixed(2));
-      total += item.priceAfterTax;
+    var itemsPricesWithTax = []
+    for (const item of input) {
+        let salesTax = item.exemption? 0 : getSalesTax(item.price);
+        let importedTax = !item.imported? 0 : getImportedTax(item.price);
+        let tax = salesTax + importedTax;
+        totalTax += item.quantity * tax;
+        itemsPricesWithTax.push(Number((item.price + tax).toFixed(2)));
+        total += item.quantity * (item.price + tax);
     }
     this.setState({
-      items : test,
-      salesTax : totalTax.toFixed(2),
-      total : total.toFixed(2)
+        items : input,
+        itemsPricesWithTax : itemsPricesWithTax,
+        salesTax : totalTax.toFixed(2),
+        total : total.toFixed(2)
     })
+  }
+
+  clearUp = () => {
+    this.setState({
+      items : [],
+      itemsPricesWithTax :[],
+      salesTax : 0,
+      total : 0
+    });
+    
+
   }
 
   render() {
@@ -68,11 +101,12 @@ class Main extends React.Component {
               <div className = 'col-md-6'> 
                 <h3>1) Add a new item into basket!</h3>
                 <Basket items = {this.state.items}/>
-                <br />
                 {/* Button trigger modal */}
                 <button type="button" className="btn btn-dark w-75" data-toggle="modal" data-target="#exampleModalCenter">
                   +
-                </button>
+                </button><br/>
+                <button type="button" className="btn btn-primary w-25"  onClick = {() => this.clearUp()}>Clear up</button>
+                <button type="button" className="btn btn-danger w-50"  onClick = {() => this.getReceipt(this.state.items)}>Check out</button>
 
                 {/* Modal for add item to basket*/}
                 <div className="modal fade" id="exampleModalCenter" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -87,52 +121,38 @@ class Main extends React.Component {
 
                       {/* new item */}
                       <div className="modal-body">
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <span className="input-group-text">Item</span>
-                          </div>
-                          <input type="text" className="form-control" id="item"/>
-                        </div>
+                            <label >Item</label>
+                            <input type="text" className="form-control" id="name"/>
 
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <span className="input-group-text">Price</span>
-                          </div>
-                          <input type="text" className="form-control" id="price"/>
-                        </div>
+                            <label >Quantity</label>
+                            <input type="number" className="form-control" id="quantity" min='1'/>
 
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <label className="input-group-text">Quantity</label>
-                          </div>
-                          <input type="number" className="form-control" id="quantity" min="1"/>
-                        </div>
+                            <label >Price</label>
+                            <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">$</span>
+                              </div>
+                              <input type="text" className="form-control" id="price"/>
+                            </div>
 
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <label className="input-group-text">Category</label>
-                          </div>
-                          <select className="custom-select" id="category">
-                            <option value="1">Food</option>
-                            <option value="2">Book</option>
-                            <option value="3">Medical product</option>
-                            <option value="4">Other</option>
-                          </select>
-                        </div>
+                            <label >Category</label>
+                            <select className="custom-select" id="category">
+                              <option value="other">Other</option>
+                              <option value="food">Food</option>
+                              <option value="book">Book</option>
+                              <option value="medical">Medical product</option>
+                            </select>
 
-                        <div className="input-group mb-3">
-                          <div className="input-group-prepend">
-                            <label className="input-group-text">Imported</label>
+                            <label >Imported</label>
+                            <select className="custom-select" id="imported">
+                              <option value="no">No</option>
+                              <option value="yes">Yes</option>
+                            </select>
+                          <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button className="btn btn-danger" onClick={this.handleSubmit}>Add to basket</button>
                           </div>
-                          <select className="custom-select" id="category">
-                            <option value="no">No</option>
-                            <option value="yes">Yes</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary" onClick = {this.handleAddItem()}>Add to basket</button>
+                          
                       </div>
                     </div>
                   </div>
@@ -150,7 +170,8 @@ class Main extends React.Component {
               />
               </div>
             </div>  
-          </div>         
+          </div>        
+          <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
         </div>
       )
   }
